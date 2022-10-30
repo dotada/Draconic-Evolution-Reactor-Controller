@@ -3,7 +3,7 @@ local version = "1.0"
 local reactorSide = "left"
 local outputfluxgateSide = "top"
 
-local targetStrength = 50
+local targetFieldStrengthPercent = 50
 local maxTemperature = 8000
 local safeTemperature = 7500
 local lowestFieldPercent = 25
@@ -278,7 +278,7 @@ function update()
     if ri.status == "running" then
         if autoInputGate == 1 then 
 		    if ri.fieldStrength < (targetFieldStrengthPercent * 1000000) then
-				fluxval = ((targetFieldStrengthPercent * 1000000) - ri.fieldStrength) + ri.fieldDrainRate * 10  -- Charge ! 
+				fluxval = ((targetFieldStrengthPercent * 1000000) - ri.fieldStrength) + ri.fieldDrainRate + 10  -- Charge ! 
 				inputfluxgate.setSignalLowFlow(fluxval)
 			else
 			inputfluxgate.setSignalLowFlow(ri.fieldDrainRate - 1)
@@ -310,7 +310,6 @@ function update()
       action = "Fuel below 10%, Need refuel"
     end
 
-    -- field strength is too low, kill and it try and charge it before it blows
     if fieldPercent <= lowestFieldPercent and ri.status == "running" then
       action = "Field Str < " ..lowestFieldPercent.."%"
       reactor.stopReactor()
